@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="libs/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.css">
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+		<script src="bootstrap/js/bootstrap.min.js"></script>
+		<script src="libs/jquery.cookie.js" type="text/javascript" charset="utf-8"></script>
+		<script src="libs/artTemplate.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			.left {
+				text-align: left;
+				margin-bottom: 25px;
+			}
+			
+			.right {
+				text-align: left;
+				margin-bottom: 25px;
+				text-indent: 1em;
+			}
+			
+			.photo {
+				padding-right: 5px;
+				position: relative;
+				width: 80px;
+				height: 80px;
+			}
+			
+			.photo img {
+				width: 100%;
+				height: 100%;
+				display: block;
+				border-radius: 50%;
+			}
+			
+			.left .photo {
+				float: left;
+			}
+			
+			.right .photo {
+				float: right;
+				left: 8px;
+			}
+			
+			.answers:hover {
+				cursor: pointer;
+			}
+			
+			.upload {
+				margin: 0;
+				padding: 0;
+				float: right;
+				position: relative;
+			}
+			
+			.upload li {
+				display: inline-block;
+				line-height: 51px;
+			}
+			
+			.upload li:nth-child(1) {
+				margin-left: 9px;
+			}
+			
+			.upload li a {
+				color: gray;
+			}
+			
+			.liuYan {
+				width: 95%;
+				margin: 0 auto;
+			}
+		</style>
+	</head>
+
+	<body>
+		<nav class="navbar navbar-inverse" role="navigation" style="border-radius: 0;">
+			<div class="container">
+				<a class="navbar-brand" style="margin-right: 0;padding-right: 0;padding-left: 0;" href="#">智游教育</a>
+				<ul class="upload">
+					<li>
+						<a href="#"><strong>+</strong>提问</a>
+					</li>
+					<li>
+						<a href="#"><i class="fa fa-user fa-lg"></i><span>登录</span></a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+		<main class="container">
+			<div class="liuYan">
+
+			</div>
+		</main>
+		<script id="mytemplate" type="text/html">
+			{{each data as up index}}
+			<section class='left' data-ques="{{up.time}}">
+				<div class='photo'><img src="uploads/{{up.petname}}.jpg" /></div>
+				<h4> {{up.petname }}  </h4>
+				<p class='answers'> {{up.content}}</p>
+				<p>{{ up.time | times}}</p>
+			</section>
+			{{if up.answers}} {{each up.answers as ups index}}
+			<section class='right'>
+				<div class='photo'><img src="uploads/{{ups.petname}}.jpg" /></div>
+				<h4> {{ups.petname }}  </h4>
+				<p> {{ups.content}}</p>
+				<p>{{ ups.time | times}}</p>
+
+			</section>
+			{{/each}} {{/if}} {{/each}}
+		</script>
+		<script type="text/javascript">
+			$.get({
+				url: '/questions',
+				data: '',
+				success: function(datas) {
+//								console.log(datas)
+//								console.log(datas.data)
+					for(var j = 0; j < datas.data.length; j++) {
+						//			console.log(datas.data[j])
+						for(var i in datas.data[j].answers) {
+							//			console.log(datas.data[j].answers)				
+							//			console.log(datas.data[j].answers[i])				
+						}
+					}
+					template.helper('times', function(data) {
+						data = new Date(data)
+						var y = data.getFullYear()
+						var m = data.getMonth() + 1
+						var d = data.getDate()
+						var h = data.getHours()
+						var mi = data.getMinutes()
+						var s = data.getSeconds()
+						m = m < 10 ? '0' + m : m
+						d = d < 10 ? '0' + d : d
+						h = h < 10 ? '0' + h : h
+						mi = mi < 10 ? '0' + mi : mi
+						s = s < 10 ? '0' + s : s
+						return y + '-' + m + '-' + d + ' ' + h + ':' + mi + ':' + s
+					})
+					var html = template('mytemplate', datas)
+					$('div.liuYan').html(html)
+
+					var petname = $.cookie('petname')
+					if(petname) {
+						$('.upload').children().find('span').html(" <strong>" + petname + "</strong>")
+							//添加下拉框
+							.after("<div class='dropdown' style='width: 80px;border: 1px solid gray;text-align: right;padding: 5px;position: absolute;top: 53px;right: 3px;display: none;'><p><a href='留言--个人资料.html' style='color: black;'>个人资料</a></p><hr style='margin: 10px 0;'/><button class='exist' style='background: lavender;border: none;width: 100%;text-align: right;'>退出</button></div>")
+							.click(function() {
+								$('.dropdown').fadeToggle(500)
+							})
+						$('.left').click(function() {
+							var dataQ = Date.parse($(this).attr('data-ques'))
+							$.cookie("quename", dataQ)
+							location.href = '留言--回答.html'
+						})
+						$('button.exist').click(function() {
+							$.get({
+								url: '/user/signout',
+								data: '',
+								success: function(data) {
+									location.href = '/'
+								}
+							})
+						})
+						$('.upload').children().eq(0).click(function() {
+							location.href = '留言--提问.html'
+						})
+
+					} else {
+						$('.upload').children().eq(0).click(function() {
+							location.href = '留言--登录.html'
+						})
+						$('.upload').children().eq(1).click(function() {
+							location.href = '留言--登录.html'
+						})
+						$('.left').click(function() {
+							location.href = '留言--登录.html'
+						})
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>

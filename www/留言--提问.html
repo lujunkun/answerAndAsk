@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<script src="libs/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="libs/jquery.cookie.js" type="text/javascript" charset="utf-8"></script>
+<style type="text/css">
+	header{
+		width: 100vw;
+		padding: 12px;
+	}
+	.alert-success{
+		width: 100%;
+		margin-top: 14px;
+		color: white;
+		background: green;
+		line-height: 200%;
+		border: none;
+		border-radius: 5px;
+	}
+	.upload{
+		margin: 0;
+		padding: 0;
+		float: right;
+		position: relative;
+	}
+	.upload li{
+		display: inline-block;
+		line-height: 51px;
+	}
+	.upload li a{
+		color: gray;
+	}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-inverse" role="navigation" style="border-radius: 0;">
+    <div class="container">
+        <a class="navbar-brand" href="#">智游教育</a>
+        <ul class="upload">
+            <li><a href="#"><i class="fa fa-user fa-lg"></i><span>登录</span></a></li>
+        </ul>
+    </div>
+</nav>	
+<header class="container">	
+	<textarea name="texts" rows="12" required="required" style="width: 100%;margin: 0 auto;" placeholder="请详细描述你的问题"></textarea>
+	<button class="alert-success" type="submit" data-toggle="modal" data-target="#myModal">提交问题</button>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					智游教育
+				</h4>
+			</div>
+			<div class="modal-body changeText">
+			     请详细描述问题
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default tiaoZhuan" data-dismiss="modal">确定
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>	
+
+</header>
+<script type="text/javascript">
+	var petname = $.cookie('petname')	
+	if(petname){
+		$('.upload').children().find('span').html(petname)
+		.after( "<div class='dropdown' style='width: 80px;border: 1px solid gray;text-align: right;padding: 5px;position: absolute;top: 53px;right: 3px;display: none;'><p><a href='留言--个人资料.html' style='color: black;'>个人资料</a></p><hr style='margin: 10px 0;'/><button class='exist' style='background: lavender;border: none;width: 100%;text-align: right;'>退出</button></div>")
+		.click(function(){
+			$('.dropdown').fadeToggle(500)	
+		})
+		$('.exist').click(function(){
+			$.get({
+				url:'/user/signout',
+				data:'',
+				success:function(data){
+					location.href = '/'
+				}
+			})
+		})
+	}
+	$('.alert-success').click(function(){
+		var datas = {}
+	    datas.content = $('textarea').val()
+//		console.log(datas)
+//		console.log($('textarea').val())
+      if(datas.content != ''){
+		$.post({
+			url:'/ask',
+			data:datas,
+			success:function(data){
+//				console.log(data)
+				if(data.code == 'success'){
+					$('.changeText').html(data.message)
+                    $('.tiaoZhuan').click(function(){
+                    	location.href = '/'
+                    })
+				}else{$('.changeText').html(data.message)}
+			}
+			
+		}) 
+	   }	
+	})
+	
+</script>
+</body>
+</html>

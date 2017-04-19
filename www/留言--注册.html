@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+<script src="libs/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.css">
+<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+<script src="bootstrap/js/bootstrap.min.js"></script>		
+<style type="text/css">
+	main{
+		width: 100vw;
+		padding: 10px;
+	}
+	form .active{
+		width: 100%;
+		border: 1px solid gainsboro;
+		border-radius: 5px;
+		margin-top: 14px;
+		line-height: 200%;
+		padding-left: 5px;
+	}
+	form input#sub{
+		background: green;
+		color: white;
+	}
+	.affix{
+		position: relative;
+		left: 40px;
+		top:12px;
+	}
+</style>
+</head>
+<body>
+	<nav class="navbar navbar-inverse" role="navigation" style="border-radius: 0;margin-bottom: 0;">
+    <div class="container">
+        <ul class="nav navbar-nav" style="text-align: center; width: 100%;">
+            <li style="float: left;z-index: 5;" class="fanHui"><a href="#"><i class="fa fa-chevron-left fa-lg"></i></a></li>
+            <!--<li style="float: right;"><a href="#"><i class="fa fa-plus-circle fa-lg"></i></a></li>-->
+            <li style="width: 80%;"><a href="#">注册</a></li>
+        </ul>
+    </div>
+</nav>
+<main class="container">
+	<form action="#">
+		<input type="text" name="petname" required="required" placeholder="请输入账户" class="active"/><br />
+		<input type="password" required="required" name="password" placeholder="请输入密码" class="active"/><br />
+		<input type="password"  placeholder="确认密码" class="active"/><br />
+		<input type="radio" name="man" checked="checked" value="ture" class="affix"/><label for="man" class="affix">男</label><br />
+		<input type="radio" name="man" value="false" class="affix"/><label for="man" class="affix">女</label>
+		<input type="email" name="email" id="email" required="required" placeholder="请输入邮箱" class="active" />
+		<input type="text" value="HTML5" class="active" required="required" title="请填写该段"/>
+		<input type="submit" value="注册" id="sub" class="active"  data-toggle="modal" data-target="#myModal"/>
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					智游教育
+				</h4>
+			</div>
+			<div class="modal-body changeText">
+			     请详细描述问题
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default tiaoZhuan" data-dismiss="modal">确定
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>		
+	</form>
+</main>
+<script type="text/javascript">
+    $('.fanHui').click(function(){
+    	history.go(-1)
+    })
+	$('form').submit(function(ev){
+		ev.preventDefault()
+		var datas = $(this).serialize()
+		var pass = $(':password').map(function(){
+			return $(this).val()
+		})
+		if(pass[0] == pass[1]){
+		  $.post({
+			url:'/user/register',
+			data:datas,
+			success:function(data){
+//				console.log(data)
+				if(data.code == 'success'){
+					$('.changeText').html(data.message)
+                    $('.tiaoZhuan').click(function(){
+                    	location.href = '留言--登录.html'
+                    })
+				}else{$('.changeText').html(data.message)}
+			}
+		  })
+		}
+		
+	})
+</script>
+</body>
+</html>

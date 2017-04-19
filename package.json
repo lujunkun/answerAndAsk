@@ -1,0 +1,20 @@
+{
+  "name": "questions",
+  "version": "1.0.0",
+  "description": "问答",
+  "main": "server.js",
+  "scripts": {
+    "test": "node server"
+  },
+  "keywords": [
+    "问答"
+  ],
+  "author": "常伟",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.1",
+    "cookie-parser": "^1.4.1",
+    "express": "^4.13.4",
+    "multer": "^1.1.0"
+  }
+}
